@@ -1,0 +1,45 @@
+#main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-family: sans-serif;
+}
+
+#podcasts{
+  align-self: flex-start;
+}
+
+#podcasts div {
+    background: aliceblue;
+    border: thin solid white;
+    padding: 2% 5%;
+    cursor: pointer;
+}
+
+#podcasts div p{
+    margin: 0;
+}
+
+#podcasts div p:nth-child(2){
+    font-style: italic;
+}
+
+#search {
+    display: block;
+    margin: 2%;
+    align-self: flex-start;
+}
+
+#nowPlaying {
+    display: flex;
+    flex-direction: column;
+}
+
+#nowPlaying audio{
+    align-self: center; 
+}
+
+#nowPlaying :last-child{
+    font-size: 14px;
+}
