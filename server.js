@@ -7,7 +7,7 @@ let Parser = require('rss-parser');
 const app = express();
 let port = process.env.PORT;
 if (port == null || port == "") {
-  port = 3000;
+  port = 5000;
 }
 
 app.use(express.static("public"))

@@ -1,5 +1,5 @@
 const feedURL = "https://www.patreon.com/rss/dungeonsanddads?auth=Te1pL8_ENX5yUKVVz5LajSpQVcsw86-7";
-const podcastsURL = "http://localhost:5000/podcasts"
+const podcastsURL = process.env.PORT ?  "https://ancient-bayou-70724.herokuapp.com/podcasts" : "http://localhost:5000/podcasts"
 
 const parent = document.getElementById("podcasts");
 let podcasts = [];
