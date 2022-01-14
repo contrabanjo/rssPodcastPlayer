@@ -1,16 +1,30 @@
 const feedURL = "https://www.patreon.com/rss/dungeonsanddads?auth=Te1pL8_ENX5yUKVVz5LajSpQVcsw86-7";
-const podcastsURL = "https://rss-podcast-player.herokuapp.com/podcasts" //"http://localhost:5000/podcasts"
+const serverURL = "http://localhost:5000"//"https://rss-podcast-player.herokuapp.com" //"http://localhost:5000"
 
 const parent = document.getElementById("podcasts");
 let podcasts = [];
 
-fetch(podcastsURL).then((response)=>{
+fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
       console.log(res.items[0])
       podcasts = Array.from(res.items);
+      podcasts.forEach((item)=> postPodcastToDB(item.enclosure["url"]));
       createAndAppendPodcastElementsfromArray(res.items, parent);
   });
 })
+
+function postPodcastToDB(newURL){
+  fetch(serverURL + "/podcast", {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      url: newURL
+    })
+  });
+}
 
 function createAndAppendPodcastElementsfromArray(arr, parent){
   arr.forEach(item=> {
