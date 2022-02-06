@@ -21,7 +21,7 @@
     margin: 0;
 }
 
-#podcasts div p:nth-child(2){
+#podcasts div span{
     font-style: italic;
 }
 

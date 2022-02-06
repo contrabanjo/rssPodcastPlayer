@@ -24,18 +24,36 @@ app.get('/', (req, res) => {
 app.get('/podcasts', (req, res) => {
   let parser = new rssParser();
   (async () => {
-    let feed = await parser.parseURL(rssURL.url);
-    res.send(feed);
-  })();
+      try {
+        let feed = await parser.parseURL(rssURL.url);
+        res.send(feed);
+      } catch(err){
+        console.log(err)
+      }
+    })();
 })
 
 app.post('/podcast',(req, res)=> {
-  db.addPodcastToDB(req.body.url);
+  db.addPodcastToDB(req.body.guid);
   res.send();
 })
 
-app.get('/listening', (req, res)=> {
-  res.sendFile(path.join(__dirname, "/public/listening.html"));
+app.get('/seconds', (req, res)=>{
+  db.getPodcastSeconds(req.query.guid).then(result => res.send(result[0]));
+})
+
+app.post('/seconds', (req, res)=> {
+  db.updatePodcastSeconds(req.body.guid, req.body.seconds);
+  res.send();
+})
+
+app.post('/played', (req, res)=>{
+  db.updatePodcastPlayed(req.body.guid, req.body.played);
+  res.send();
+})
+
+app.get('/played', (req, res)=>{
+  db.getPodcastPlayed(req.query.guid).then(result => res.send(result[0]));
 })
 
 const server = app.listen(port, () => {
