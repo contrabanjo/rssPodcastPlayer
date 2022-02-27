@@ -58,5 +58,5 @@ app.get('/played', (req, res)=>{
 
 const server = app.listen(port, () => {
   const { port } = server.address()
-  console.log(`Listening on http:/localhost:${port}`)
+  console.log(`Listening on port ${port}`)
 })
