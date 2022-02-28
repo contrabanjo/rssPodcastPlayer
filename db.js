@@ -3,7 +3,10 @@ const client = new Client({
   host: process.env.DATABASE_URL,
   user: 'postgres',
   password: 'root',
-  database: 'postgres'
+  database: 'postgres',
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 client.connect();
