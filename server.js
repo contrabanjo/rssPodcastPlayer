@@ -5,7 +5,7 @@ const path = require('path');
 
 const rssParser = require('rss-parser');
 
-//const db = require('./db.js');
+const db = require('./db.js');
 
 const app = express();
 
@@ -39,7 +39,7 @@ app.post('/podcast',(req, res)=> {
 })
 
 app.get('/seconds', (req, res)=>{
-  db.getPodcastSeconds(req.query.guid).then(result => res.send(result[0]));
+  db.getPodcastSeconds(req.query.guid).then(result => res.send(result.rows[0]));
 })
 
 app.post('/seconds', (req, res)=> {
@@ -53,7 +53,7 @@ app.post('/played', (req, res)=>{
 })
 
 app.get('/played', (req, res)=>{
-  db.getPodcastPlayed(req.query.guid).then(result => res.send(result[0]));
+  db.getPodcastPlayed(req.query.guid).then(result => res.send(result.rows[0]));
 })
 
 const server = app.listen(port, () => {

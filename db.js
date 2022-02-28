@@ -1,52 +1,57 @@
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
+const {Client} = require('pg');
+const client = new Client({
+  host: process.env.DATABASE_URL,
+  user: 'postgres',
   password: 'root',
-  database: 'podcasts'
+  database: 'postgres'
 });
 
-connection.connect((err) => {
-  if (err) throw err;
-  console.log('Connected!');
-});
+client.connect();
 
 function addPodcastToDB(guid){
-  const sql = `INSERT IGNORE INTO podcasts
-           VALUES("` + guid + `", DEFAULT, DEFAULT)`;
-  connection.query(sql);
+  const sql = "INSERT INTO podcasts VALUES(" + guid  + ", DEFAULT, DEFAULT) ON CONFLICT (guid) DO NOTHING;";
+  client.query(sql);
 }
+
+addPodcastToDB(1)
 
 function updatePodcastSeconds(guid, seconds){
-  const sql = `UPDATE podcasts SET seconds =` + seconds + ` WHERE guid = "` + guid + `"`;
-  connection.query(sql);
+   const sql = "UPDATE podcasts SET seconds =" + seconds + " WHERE guid = " + guid +";";
+   client.query(sql);
 }
+
+updatePodcastSeconds(1, 2);
 
 function getPodcastSeconds(guid){
-  const sql = `SELECT seconds FROM podcasts WHERE guid = "` + guid + `"`;
-  return new Promise((resolve, reject)=>{
-      connection.query(sql, (err, res)=>{
-        if(err) return reject(err);
-        return resolve(res);
-      })
-    })
+   const sql = "SELECT seconds FROM podcasts WHERE guid = " + guid + ";";
+   return new Promise((resolve, reject)=>{
+       client.query(sql, (err, res)=>{
+         if(err) return reject(err);
+         return resolve(res);
+       })
+     })
 }
+
+getPodcastSeconds(1).then(res => console.log(res.rows));
 
 function updatePodcastPlayed(guid, played){
-  const sql = `UPDATE podcasts SET played =` + played + ` WHERE guid = "` + guid + `"`;
-  connection.query(sql);
+  const sql = "UPDATE podcasts SET played =" + played + " WHERE guid = " + guid + ";";
+  client.query(sql);
 }
 
+updatePodcastPlayed(1, true);
+
 function getPodcastPlayed(guid){
-  const sql = `SELECT played FROM podcasts WHERE guid ="` + guid + `"`
+  const sql = "SELECT played FROM podcasts WHERE guid =" + guid + ";";
   return new Promise((resolve, reject)=>{
-    connection.query(sql, (err, res)=>{
+    client.query(sql, (err, res)=>{
       if (err) return reject(err);
       return resolve(res);
     })
   })
 }
 
+getPodcastPlayed(1).then(res => console.log(res.rows));
 
 module.exports.addPodcastToDB = addPodcastToDB;
 

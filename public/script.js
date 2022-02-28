@@ -1,5 +1,5 @@
 const feedURL = "https://www.patreon.com/rss/dungeonsanddads?auth=Te1pL8_ENX5yUKVVz5LajSpQVcsw86-7";
-const serverURL = "https://rss-podcast-player.herokuapp.com/"
+const serverURL = "http://localhost:5000"//"https://rss-podcast-player.herokuapp.com/"
 
 const parent = document.getElementById("podcasts");
 let podcasts = [];
@@ -12,7 +12,6 @@ fetch(serverURL + "/podcasts").then((response)=>{
       createAndAppendPodcastElementsfromArray(res.items, parent);
   });
 })
-
 
 function postPodcastToDB(guid){
   fetch(serverURL + "/podcast", {
@@ -44,7 +43,6 @@ function updateSeconds(guid, seconds){
 function saveCurrentSeconds(e){
   updateSeconds(e.target.guid, e.target.currentTime);
   if (e.target.currentTime/e.target.duration > 0.95){
-    //post request to update played to 1
     fetch(serverURL + "/played", {
       headers:{
         'Accept': 'application/json',
@@ -53,7 +51,7 @@ function saveCurrentSeconds(e){
       method: 'POST',
       body: JSON.stringify({
         guid: e.target.guid,
-        played: 1
+        played: true
       })
     })
   }
@@ -110,7 +108,7 @@ function createAndAppendPodcastElementsfromArray(arr, parent){
     podcastElement.addEventListener("click", ()=> updateNowPlaying(item));
 
     getPlayed(item.guid).then(response => response.json().then(res => {
-       if (res.played === 1){ played.textContent = " - Played"}
+       if (res.played === true){ played.textContent = " - Played"}
        parent.append(podcastElement);
       }))
   })
