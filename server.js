@@ -5,7 +5,7 @@ const path = require('path');
 
 const rssParser = require('rss-parser');
 
-const db = require('./db.js');
+//const db = require('./db.js');
 
 const app = express();
 
