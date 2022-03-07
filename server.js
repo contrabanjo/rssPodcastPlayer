@@ -62,7 +62,11 @@ app.post('/played', (req, res)=>{
 })
 
 app.get('/played', (req, res)=>{
-  db.getPodcastPlayed(req.query.guid).then(result => res.send(result.rows[0]));
+
+  db.getPodcastPlayed(req.query.guid).then(result => {
+    console.log('result:', result)
+    res.send(result.rows[0])
+  });
 })
 
 app.get('/db', async (req, res) => {
