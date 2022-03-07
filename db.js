@@ -5,9 +5,9 @@ const client = new Client({
   // user: 'postgres',
   // database: 'postgres',
   // password: 'root',
-  ssl: {
-    rejectUnauthorized: false
-  }
+  // ssl: {
+  //   rejectUnauthorized: false
+  // }
 });
 
 client.connect(err => {
