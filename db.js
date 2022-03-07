@@ -6,12 +6,13 @@ const pool = new Pool({
   }
 });
 
+pool.connect().then(console.log('db connected'));
 
-try {
-  const client = await pool.connect()
-} catch (err) {
-  console.error(err)
-}
+// try {
+//   const client = pool.connect()
+// } catch (err) {
+//   console.error(err)
+// }
 // const {Client} = require('pg');
 // const client = new Client({
 //   host: process.env.DATABASE_URL,
