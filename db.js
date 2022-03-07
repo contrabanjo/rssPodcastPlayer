@@ -6,7 +6,12 @@ const pool = new Pool({
   }
 });
 
-const client = await pool.connect()
+
+try {
+  const client = await pool.connect()
+} catch (err) {
+  console.error(err)
+}
 // const {Client} = require('pg');
 // const client = new Client({
 //   host: process.env.DATABASE_URL,
@@ -64,7 +69,7 @@ function getPodcastPlayed(guid){
   })
 }
 
-getPodcastPlayed(1).then(res => console.log(res.rows));
+
 
 module.exports.addPodcastToDB = addPodcastToDB;
 
