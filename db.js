@@ -8,31 +8,6 @@ const client = new Pool({
 
 client.connect().then(console.log('db connected'));
 
-// try {
-//   const client = pool.connect()
-// } catch (err) {
-//   console.error(err)
-// }
-// const {Client} = require('pg');
-// const client = new Client({
-//   host: process.env.DATABASE_URL,
-//   // host: 'localhost',//process.env.DATABASE_URL,
-//   // user: 'postgres',
-//   // database: 'postgres',
-//   // password: 'root',
-//   // ssl: {
-//   //   rejectUnauthorized: false
-//   // }
-// });
-
-// client.connect(err => {
-//   if (err) {
-//     console.error('connection error', err.stack)
-//   } else {
-//     console.log('connected')
-//   }
-// })
-
 function addPodcastToDB(guid){
   const sql = "INSERT INTO podcasts VALUES(" + guid  + ", DEFAULT, DEFAULT) ON CONFLICT (guid) DO NOTHING;";
   try {

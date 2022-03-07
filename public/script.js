@@ -7,6 +7,7 @@ let podcasts = [];
 fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
       console.log(res.items[0])
+      document.getElementById('loading').remove()
       podcasts = Array.from(res.items);
       podcasts.forEach((item)=> postPodcastToDB(item.guid));
       createAndAppendPodcastElementsfromArray(res.items, parent);

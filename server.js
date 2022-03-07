@@ -62,25 +62,11 @@ app.post('/played', (req, res)=>{
 })
 
 app.get('/played', (req, res)=>{
-
   db.getPodcastPlayed(req.query.guid).then(result => {
-    console.log('result:', result)
     res.send(result.rows[0])
   });
 })
 
-app.get('/db', async (req, res) => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT * FROM podcasts');
-    const results = { 'results': (result) ? result.rows : null};
-    res.send(results);//res.render('pages/db', results );
-    client.release();
-  } catch (err) {
-    console.error(err);
-    res.send("Error " + err);
-  }
-})
 
 const server = app.listen(port, () => {
   const { port } = server.address()
