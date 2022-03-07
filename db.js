@@ -5,26 +5,30 @@ const client = new Client({
   // user: 'postgres',
   // database: 'postgres',
   // password: 'root',
-  // ssl: {
-  //   rejectUnauthorized: false
-  // }
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-client.connect();
+client.connect(err => {
+  if (err) {
+    console.error('connection error', err.stack)
+  } else {
+    console.log('connected')
+  }
+})
 
 function addPodcastToDB(guid){
   const sql = "INSERT INTO podcasts VALUES(" + guid  + ", DEFAULT, DEFAULT) ON CONFLICT (guid) DO NOTHING;";
   client.query(sql);
 }
 
-addPodcastToDB(1)
 
 function updatePodcastSeconds(guid, seconds){
    const sql = "UPDATE podcasts SET seconds =" + seconds + " WHERE guid = " + guid +";";
    client.query(sql);
 }
 
-updatePodcastSeconds(1, 2);
 
 function getPodcastSeconds(guid){
    const sql = "SELECT seconds FROM podcasts WHERE guid = " + guid + ";";
@@ -35,8 +39,6 @@ function getPodcastSeconds(guid){
        })
      })
 }
-
-getPodcastSeconds(1).then(res => console.log(res.rows));
 
 function updatePodcastPlayed(guid, played){
   const sql = "UPDATE podcasts SET played =" + played + " WHERE guid = " + guid + ";";
