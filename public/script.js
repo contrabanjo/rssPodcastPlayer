@@ -1,5 +1,5 @@
 const feedURL = "https://www.patreon.com/rss/dungeonsanddads?auth=Te1pL8_ENX5yUKVVz5LajSpQVcsw86-7";
-const serverURL = "http://rss-podcast-player.herokuapp.com/" //"http://localhost:5000"
+const serverURL = "http://rss-podcast-player.herokuapp.com" //"http://localhost:5000"
 
 const parent = document.getElementById("podcasts");
 let podcasts = [];
