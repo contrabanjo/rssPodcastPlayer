@@ -1,12 +1,12 @@
 const { Pool } = require('pg');
-const pool = new Pool({
+const client = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
 });
 
-pool.connect().then(console.log('db connected'));
+client.connect().then(console.log('db connected'));
 
 // try {
 //   const client = pool.connect()
