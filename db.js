@@ -35,7 +35,11 @@ pool.connect().then(console.log('db connected'));
 
 function addPodcastToDB(guid){
   const sql = "INSERT INTO podcasts VALUES(" + guid  + ", DEFAULT, DEFAULT) ON CONFLICT (guid) DO NOTHING;";
-  client.query(sql);
+  try {
+    client.query(sql);
+  } catch {
+    console.error(err)
+  }
 }
 
 
