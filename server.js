@@ -5,16 +5,16 @@ const path = require('path');
 
 const rssParser = require('rss-parser');
 
-//const db = require('./db.js');
+const db = require('./db.js');
 
 
-const { Pool } = require('pg');
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+// const { Pool } = require('pg');
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }
+// });
 
 const app = express();
 
