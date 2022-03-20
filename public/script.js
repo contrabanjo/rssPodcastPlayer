@@ -91,7 +91,7 @@ function getPlayed(guid){
 }
 
 function createAndAppendPodcastElementsfromArray(arr, parent){
-  arr.slice(20).forEach(item=> {
+  arr.slice(0, 20).forEach(item=> {
     const podcastElement = document.createElement("div");
     podcastElement.className = "podcast-element";
     podcastElement.guid = item.guid;
