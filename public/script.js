@@ -91,8 +91,7 @@ function getPlayed(guid){
 }
 
 function createAndAppendPodcastElementsfromArray(arr, parent){
-  console.log("creating podcasts")
-  arr.forEach(item=> {
+  arr.slice(20).forEach(item=> {
     const podcastElement = document.createElement("div");
     podcastElement.className = "podcast-element";
     podcastElement.guid = item.guid;
@@ -109,7 +108,6 @@ function createAndAppendPodcastElementsfromArray(arr, parent){
     podcastElement.addEventListener("click", ()=> updateNowPlaying(item));
 
     getPlayed(item.guid).then(response => response.json().then(res => {
-       console.log("creating item", item.guid);
        if (res.played === true){ played.textContent = " - Played"}
        parent.append(podcastElement);
       }))
