@@ -63,10 +63,14 @@ app.post('/played', (req, res)=>{
 
 app.get('/played', (req, res)=>{
   db.getPodcastPlayed(req.query.guid).then(result => {
-    res.send(result.rows[0])
+    if (result.rows.length > 1) {
+      const arr = result.rows.map(i => i.played);
+      res.send(arr);
+    } else {
+      res.send(result.rows[0])
+    }
   });
 })
-
 
 const server = app.listen(port, () => {
   const { port } = server.address()

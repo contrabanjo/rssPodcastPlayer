@@ -1,15 +1,15 @@
 const feedURL = "https://www.patreon.com/rss/dungeonsanddads?auth=Te1pL8_ENX5yUKVVz5LajSpQVcsw86-7";
-const serverURL = "https://rss-podcast-player.herokuapp.com" //"http://localhost:5000"
+const serverURL = "http://localhost:5000" //"https://rss-podcast-player.herokuapp.com" //"http://localhost:5000"
 
 const parent = document.getElementById("podcasts");
 let podcasts = [];
 
 fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
-      console.log(res.items[0])
       document.getElementById('loading').remove()
       podcasts = Array.from(res.items);
-      podcasts.forEach((item)=> postPodcastToDB(item.guid));
+      const guids = podcasts.reduce((all, next, index)=> index > 0 ? all + ", ("+ next.guid + ", DEFAULT, DEFAULT)": all + "("+ next.guid + ", DEFAULT, DEFAULT)", "");
+      postPodcastToDB(guids)
       createAndAppendPodcastElementsfromArray(res.items, parent);
   });
 })
@@ -58,27 +58,6 @@ function saveCurrentSeconds(e){
   }
 }
 
-function formatTimeForMySQL(time){
-  let hours = 0;
-  let minutes = time/60;
-  if (minutes > 60) {
-    hours = minutes/60;
-    minutes = minutes-60;
-  }
-  let seconds = time%60;
-
-  function addLeadingZero(n){
-    n = Math.floor(n);
-    if (n < 10) return "0" + n
-    return n;
-  }
-
-  hours = addLeadingZero(hours);
-  minutes = addLeadingZero(minutes);
-  seconds = addLeadingZero(seconds);
-  return hours + '' +  minutes +'' + seconds;
-}
-
 const currentAudio = document.getElementById("currentAudio");
 currentAudio.addEventListener("timeupdate", saveCurrentSeconds);
 
@@ -91,27 +70,28 @@ function getPlayed(guid){
 }
 
 function createAndAppendPodcastElementsfromArray(arr, parent){
-  arr.slice(0, 20).forEach(item=> {
-    const podcastElement = document.createElement("div");
-    podcastElement.className = "podcast-element";
-    podcastElement.guid = item.guid;
+  const allPlayed = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
+  getPlayed(allPlayed).then(result => result.json().then( playedArr => {
+    arr.forEach((item, index)=> {
+      const podcastElement = document.createElement("div");
+      podcastElement.className = "podcast-element";
+      podcastElement.guid = item.guid;
 
-    const title = document.createElement("p");
-    title.textContent = item.title;
+      const title = document.createElement("p");
+      title.textContent = item.title;
 
-    const date = document.createElement("span");
-    const dateString = new Date(item.pubDate).toDateString().split(" ")
-    date.textContent = dateString[1] + " " + dateString[3];
+      const date = document.createElement("span");
+      const dateString = new Date(item.pubDate).toDateString().split(" ")
+      date.textContent = dateString[1] + " " + dateString[3];
 
-    const played = document.createElement("span");
-    podcastElement.append(title, date, played);
-    podcastElement.addEventListener("click", ()=> updateNowPlaying(item));
+      const played = document.createElement("span");
+      played.textContent = playedArr[index] === "t" ? " - Played" : ""
+      podcastElement.append(title, date, played);
+      podcastElement.addEventListener("click", ()=> updateNowPlaying(item));
 
-    getPlayed(item.guid).then(response => response.json().then(res => {
-       if (res.played === true){ played.textContent = " - Played"}
-       parent.append(podcastElement);
-      }))
-  })
+      parent.append(podcastElement);
+    })
+  }))
 }
 
 function updateNowPlaying(element){
