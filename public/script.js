@@ -1,8 +1,9 @@
 const feedURL = "https://www.patreon.com/rss/dungeonsanddads?auth=Te1pL8_ENX5yUKVVz5LajSpQVcsw86-7";
-const serverURL = "https://rss-podcast-player.herokuapp.com" //"http://localhost:5000"
+const serverURL = "http://localhost:5000" //"https://rss-podcast-player.herokuapp.com"
 
 const parent = document.getElementById("podcasts");
 let podcasts = [];
+let queue = [];
 
 fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
@@ -70,12 +71,19 @@ function getPlayed(guid){
 }
 
 function createAndAppendPodcastElementsfromArray(arr, parent){
-  const allPlayed = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
-  getPlayed(allPlayed).then(result => result.json().then( playedArr => {
+  const guids = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
+  getPlayed(guids).then(result => result.json().then(playedArr => {
     arr.forEach((item, index)=> {
       const podcastElement = document.createElement("div");
       podcastElement.className = "podcast-element";
       podcastElement.guid = item.guid;
+
+      const playButton = document.createElement("div");
+      playButton.className = "play"
+      playButton.addEventListener("click", ()=> updateNowPlaying(item));
+
+      const podcastText = document.createElement("div");
+      podcastText.className = "podcastText";
 
       const title = document.createElement("p");
       title.textContent = item.title;
@@ -85,13 +93,70 @@ function createAndAppendPodcastElementsfromArray(arr, parent){
       date.textContent = dateString[1] + " " + dateString[3];
 
       const played = document.createElement("span");
-      played.textContent = playedArr[index] === "t" ? " - Played" : ""
-      podcastElement.append(title, date, played);
-      podcastElement.addEventListener("click", ()=> updateNowPlaying(item));
+      played.textContent = playedArr[index].played === true ? " - Played" : ""
+
+      podcastText.append(title, date, played)
+
+      const addToQueueButton = document.createElement("div");
+      addToQueueButton.className = "add";
+      addToQueueButton.textContent = "+";
+      addToQueueButton.addEventListener("click", ()=> addToQueue(item));
+
+      podcastElement.append(playButton, podcastText, addToQueueButton);
 
       parent.append(podcastElement);
     })
   }))
+}
+function createQueue(arr){
+  const oldQueueContainer = document.getElementById("queue")
+  if (oldQueueContainer) oldQueueContainer.remove();
+
+  if (arr.length > 0) {
+    const queueContainer = document.createElement("div");
+    queueContainer.id = "queue"
+
+    const queueTitle = document.createElement("div");
+    queueTitle.textContent = "Up Next:";
+    queueContainer.append(queueTitle);
+
+    arr.forEach(item => {
+      const queueItem = document.createElement("div");
+      queueItem.textContent = item.title;
+      const minus = document.createElement("div");
+      minus.textContent = "-";
+      queueItem.append(minus);
+      queueItem.addEventListener("click", ()=>{removeFromQueue(item)})
+      queueContainer.append(queueItem);
+    })
+
+    document.getElementById("nowPlaying").after(queueContainer);
+  }
+}
+
+function hideQueue(){
+  document.getElementById("queue").remove();
+}
+
+function addToQueue(podcast){
+  if (!queue.includes(podcast)){
+    queue.push(podcast);
+  }
+  createQueue(queue);
+}
+
+function removeFromQueue(podcast){
+  const index = queue.indexOf(podcast);
+  queue.splice(index, 1);
+  createQueue(queue);
+}
+
+function getQueue(){
+  return queue
+}
+
+function clearQueue(){
+  queue = [];
 }
 
 function updateNowPlaying(element){
@@ -108,7 +173,19 @@ function updateNowPlaying(element){
 
   getCurrentSeconds(element.guid).then(response => response.json().then(res=> audio.currentTime = res.seconds));
 
+  audio.addEventListener("ended", playNextInQueue);
+
+  audio.play();
   window.scrollTo(0,0);
+}
+
+function playNextInQueue(){
+  const audio = document.getElementById("nowPlaying").childNodes[1];
+  if (queue.length > 0) {
+    audio.src = queue[0].enclosure.url;
+    audio.play();
+  }
+  queue.shift();
 }
 
 function onSearch(e){
