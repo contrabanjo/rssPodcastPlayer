@@ -3,18 +3,10 @@ const rssURL = require('./url.json')
 const express = require('express');
 const path = require('path');
 
+
 const rssParser = require('rss-parser');
 
 const db = require('./db.js');
-
-
-// const { Pool } = require('pg');
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: {
-//     rejectUnauthorized: false
-//   }
-// });
 
 const app = express();
 
@@ -42,6 +34,10 @@ app.get('/podcasts', (req, res) => {
     })();
 })
 
+app.get('/podcast', (req, res)=> {
+  db.getPodcast(req.query.guid).then(result => res.send(result.rows));
+})
+
 app.post('/podcast',(req, res)=> {
   db.addPodcastToDB(req.body.guid);
   res.send();
@@ -64,8 +60,7 @@ app.post('/played', (req, res)=>{
 app.get('/played', (req, res)=>{
   db.getPodcastPlayed(req.query.guid).then(result => {
     if (result.rows.length > 1) {
-      const arr = result.rows.map(i => i.played);
-      res.send(arr);
+      res.send(result.rows);
     } else {
       res.send(result.rows[0])
     }

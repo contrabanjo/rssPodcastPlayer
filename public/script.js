@@ -10,8 +10,6 @@ const parent = document.getElementById("podcasts");
 let podcasts = [];
 let queue = [];
 
-
-
 fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
       document.getElementById('loading').remove()
@@ -77,44 +75,51 @@ function getPlayed(guid){
   return fetch(serverURL + "/played?guid=" + guid);
 }
 
+function createPodcastElement(item, index, playedArr){
+  const podcastElement = document.createElement("div");
+  podcastElement.className = "podcast-element";
+  podcastElement.guid = item.guid;
+
+  const playButton = document.createElement("div");
+  playButton.className = "play"
+  playButton.addEventListener("click", () => updateNowPlaying(item));
+
+  const podcastText = document.createElement("div");
+  podcastText.className = "podcastText";
+
+  const title = document.createElement("p");
+  title.textContent = item.title;
+
+  const date = document.createElement("span");
+  const dateString = new Date(item.pubDate).toDateString().split(" ")
+  date.textContent = dateString[1] + " " + dateString[3];
+
+  const played = document.createElement("span");
+  played.textContent = playedArr[index].played === true ? " - Played" : ""
+
+  podcastText.append(title, date, played)
+
+  const addToQueueButton = document.createElement("div");
+  addToQueueButton.className = "add";
+  addToQueueButton.textContent = "+";
+  addToQueueButton.addEventListener("click", () => addToQueue(item));
+
+  podcastElement.append(playButton, podcastText, addToQueueButton);
+
+  return podcastElement;
+}
+
 function createAndAppendPodcastElementsfromArray(arr, parent){
   const guids = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
   getPlayed(guids).then(result => result.json().then(playedArr => {
+    playedArr.sort((a, b)=> b.guid-a.guid)
     arr.forEach((item, index)=> {
-      const podcastElement = document.createElement("div");
-      podcastElement.className = "podcast-element";
-      podcastElement.guid = item.guid;
-
-      const playButton = document.createElement("div");
-      playButton.className = "play"
-      playButton.addEventListener("click", ()=> updateNowPlaying(item));
-
-      const podcastText = document.createElement("div");
-      podcastText.className = "podcastText";
-
-      const title = document.createElement("p");
-      title.textContent = item.title;
-
-      const date = document.createElement("span");
-      const dateString = new Date(item.pubDate).toDateString().split(" ")
-      date.textContent = dateString[1] + " " + dateString[3];
-
-      const played = document.createElement("span");
-      played.textContent = playedArr[index].played === true ? " - Played" : ""
-
-      podcastText.append(title, date, played)
-
-      const addToQueueButton = document.createElement("div");
-      addToQueueButton.className = "add";
-      addToQueueButton.textContent = "+";
-      addToQueueButton.addEventListener("click", ()=> addToQueue(item));
-
-      podcastElement.append(playButton, podcastText, addToQueueButton);
-
-      parent.append(podcastElement);
+      const newElement = createPodcastElement(item, index, playedArr)
+      parent.append(newElement);
     })
   }))
 }
+
 function createQueue(arr){
   const oldQueueContainer = document.getElementById("queue")
   if (oldQueueContainer) oldQueueContainer.remove();

@@ -37,6 +37,11 @@ function addPodcastToDB(guid){
   })
 }
 
+function getPodcast(guid){
+  const sql = "SELECT * FROM podcasts WHERE guid = " + guid +";"
+  return pool.query(sql);
+}
+
 function updatePodcastSeconds(guid, seconds){
    const sql = "UPDATE podcasts SET seconds =" + seconds + " WHERE guid = " + guid +";";
    pool.connect((err, client, release)=> {
@@ -75,7 +80,7 @@ function updatePodcastPlayed(guid, played){
 function getPodcastPlayed(guid){
   let sql;
   if (guid.length > 6 ) {
-    sql = "SELECT played FROM podcasts WHERE guid IN (" + guid + ");";
+    sql = "SELECT * FROM podcasts WHERE guid IN (" + guid + ");";
   } else {
     sql = "SELECT played FROM podcasts WHERE guid =" + guid + ";";
   }
@@ -88,3 +93,4 @@ module.exports.updatePodcastSeconds = updatePodcastSeconds;
 module.exports.getPodcastSeconds = getPodcastSeconds;
 module.exports.updatePodcastPlayed = updatePodcastPlayed;
 module.exports.getPodcastPlayed = getPodcastPlayed;
+module.exports.getPodcast = getPodcast;
