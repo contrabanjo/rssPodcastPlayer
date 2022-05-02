@@ -16,12 +16,12 @@
     padding: 2% 5%;
 
     display: grid;
-    grid-template-columns: 1fr 5fr 1fr; 
+    grid-template-columns: 1fr 5fr 1fr;
     align-items: center;
 }
 
 .podcastText {
- 
+
 }
 
 
@@ -46,7 +46,7 @@
 }
 
 #nowPlaying audio{
-    align-self: center; 
+    align-self: center;
     width: 100%;
 }
 
@@ -56,7 +56,7 @@
 
 .play{
   cursor: pointer;
-  
+
   background: black;
   height: 30px;
   width: 30px;
@@ -78,7 +78,7 @@
 
 #queue > div{
   padding: 2px;
-  
+
 }
 
 #queue > :first-child {

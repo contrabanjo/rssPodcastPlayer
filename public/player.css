@@ -1,0 +1,105 @@
+:root{
+
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#player {
+  place-content: center;
+  font-family: sans-serif;
+}
+
+
+#controls {
+  display: flex;
+  justify-content:center;
+  align-items: center;
+}
+
+#play{
+  border: thin solid black;
+  height: 4vh;
+  width: 4vh;
+  border-radius: 200px;
+  padding: 1vh;
+}
+
+#play div{
+  height: 100%;
+  width: 100%;
+  background: black;
+}
+
+.play {
+  clip-path: polygon(100% 50%, 15% 0, 15% 100%);
+}
+
+.pause {
+  clip-path: polygon(20% 0, 20% 100%, 45% 100%, 45% 0, 55% 0, 55% 100%, 80% 100%, 80% 0);
+}
+
+.stop {
+  clip-path: none;
+}
+
+#seek {
+  width: 100%;
+}
+
+#seek-values{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+#seek-values p{
+  margin: 0;
+}
+
+#rewind-container, #fast-forward-container {
+
+}
+
+#rewind-container, #fast-forward-container, #seek, #play {
+  cursor: pointer;
+}
+
+#rewind-container :first-child{
+ background: black;
+ clip-path: polygon(50% 0, 50% 50%, 100% 0, 100% 100%, 50% 50%, 50% 100%, 0% 50%);
+}
+
+#fast-forward-container :last-child {
+  background: black;
+  clip-path: polygon(0 0, 50% 50%, 50% 0, 100% 50%, 50% 100%, 50% 50%, 0 100%);
+}
+
+#rewind, #fast-forward {
+  border: solid thin;
+  height: 2vh;
+  width: 2vh;
+  font-size: 0.7em;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+#rewind{
+  border-left: 0;
+  margin-right: 1.5vh;
+
+  background: black;
+  clip-path: polygon(50% 0, 50% 50%, 100% 0, 100% 100%, 50% 50%, 50% 100%, 0% 50%);
+}
+
+#fast-forward{
+  border-right: 0;
+  margin-left: 1.5vh;
+  background: black;
+  clip-path: polygon(0 0, 50% 50%, 50% 0, 100% 50%, 50% 100%, 50% 50%, 0 100%);
+}
+

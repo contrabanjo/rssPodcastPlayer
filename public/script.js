@@ -174,7 +174,7 @@ function clearQueue(){
 function updateNowPlaying(element){
   const nowPlaying = document.getElementById("nowPlaying");
 
-  const audio = nowPlaying.childNodes[1];
+  const audio = document.getElementById("currentAudio");
   const title = document.getElementById("npTitle");
   const description = document.getElementById("npDescription");
 
@@ -183,7 +183,17 @@ function updateNowPlaying(element){
   title.textContent = element.title;
   description.innerHTML = element.content;
 
-  getCurrentSeconds(element.guid).then(response => response.json().then(res=> audio.currentTime = res.seconds));
+
+  let podcastTime = 0;
+  getCurrentSeconds(element.guid).then(response => response.json().then(res=> {
+    podcastTime = res.seconds
+    audio.currentTime = res.seconds
+    console.log("seconds fetched, current time", audio.currentTime);
+  }));
+
+  audio.addEventListener("canplay", (e)=>console.log("audio can be played at", e.target.currentTime));
+  audio.addEventListener("playing", (e)=>console.log("playback is ready to start at", e.target.currentTime));
+  audio.addEventListener("loadedData", (e)=>console.log("audio loaded"));
 
   audio.addEventListener("ended", playNextInQueue);
 
