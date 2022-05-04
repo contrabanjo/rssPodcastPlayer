@@ -183,17 +183,13 @@ function updateNowPlaying(element){
   title.textContent = element.title;
   description.innerHTML = element.content;
 
-
-  let podcastTime = 0;
-  getCurrentSeconds(element.guid).then(response => response.json().then(res=> {
-    podcastTime = res.seconds
-    audio.currentTime = res.seconds
-    console.log("seconds fetched, current time", audio.currentTime);
-  }));
-
-  audio.addEventListener("canplay", (e)=>console.log("audio can be played at", e.target.currentTime));
-  audio.addEventListener("playing", (e)=>console.log("playback is ready to start at", e.target.currentTime));
-  audio.addEventListener("loadedData", (e)=>console.log("audio loaded"));
+  audio.addEventListener("loadedmetadata", (e)=>{
+    console.log("audio metadata loaded")
+    getCurrentSeconds(element.guid).then(response => response.json().then(res=> {
+      audio.currentTime = res.seconds
+      console.log("seconds fetched, current time", audio.currentTime);
+    }));
+  });
 
   audio.addEventListener("ended", playNextInQueue);
 
