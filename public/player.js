@@ -21,10 +21,12 @@ function seekTo(){
 
 function updateCurrentTime(){
   seek.value = Math.round((audio.currentTime/audio.duration) * 100);
-  //currentTime.innerHTML = audio.currentTime
   const date = new Date(0, 0, 0, 0, 0, audio.currentTime);
   const timeStr = date.toTimeString().split(' ')[0];
   currentTime.innerHTML = timeStr
+  const dur = new Date(0, 0, 0, 0, 0, audio.duration - audio.currentTime);
+  const durStr = dur.toTimeString().split(' ')[0];
+  duration.innerHTML = durStr
 }
 
 seek.addEventListener('change', seekTo);
