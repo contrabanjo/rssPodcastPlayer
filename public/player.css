@@ -12,8 +12,8 @@
 
 #play{
   border: solid black;
-  height: 4vh;
-  width: 4vh;
+  height: calc(3vh + 3vw);
+  width: calc(3vh + 3vw);
   border-radius: 200px;
   padding: 1vh;
 }
@@ -52,7 +52,7 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 20px;
   width: 20px;
-  border-radius: 50%;
+/*   border-radius: 50%; */
   background: #03A9F4;
   border: thin solid #86d9ff;
   cursor: ew-resize;
@@ -63,8 +63,8 @@ input[type="range"]::-webkit-slider-thumb {
 input[type=range]::-webkit-slider-runnable-track  {
   -webkit-appearance: none;
   box-shadow: none;
-  border: none;
-  background: #a5e3ff;
+  border: solid thin ;
+  background: #f0f8ff;
 }
 
 #seek {
@@ -76,7 +76,6 @@ input[type=range]::-webkit-slider-runnable-track  {
   width: 100%;
   display: flex;
   justify-content: space-between;
-
 }
 
 #seek-values p{
@@ -84,9 +83,8 @@ input[type=range]::-webkit-slider-runnable-track  {
 }
 
 #rewind, #fast-forward {
-  height: 4vh;
-  width: 4vh;
-  font-size: 0.7em;
+  height: calc(3vh + 3vw);
+  width: calc(3vh + 3vw);
   font-family: sans-serif;
   font-weight: bold;
   background: black;

@@ -1,4 +1,3 @@
-const feedURL = "https://www.patreon.com/rss/dungeonsanddads?auth=Te1pL8_ENX5yUKVVz5LajSpQVcsw86-7";
 let serverURL;
 if (window.location.hostname.includes("localhost"))
   serverURL = "http://localhost:5000"
@@ -10,6 +9,7 @@ const parent = document.getElementById("podcasts");
 let podcasts = [];
 let queue = [];
 
+//////initialize page////////////////////////
 fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
       document.getElementById('loading').remove()
@@ -20,6 +20,10 @@ fetch(serverURL + "/podcasts").then((response)=>{
   });
 })
 
+//////initialize page////////////////////////
+
+
+//////database calls////////////////////////
 function postPodcastToDB(guid){
   fetch(serverURL + "/podcast", {
     headers: {
@@ -75,6 +79,21 @@ function getPlayed(guid){
   return fetch(serverURL + "/played?guid=" + guid);
 }
 
+//////database calls////////////////////////
+
+//////////////podcast elements////////////////////////
+
+function createAndAppendPodcastElementsfromArray(arr, parent){
+  const guids = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
+  getPlayed(guids).then(result => result.json().then(playedArr => {
+    playedArr.sort((a, b)=> b.guid-a.guid)
+    arr.forEach((item, index)=> {
+      const newElement = createPodcastElement(item, index, playedArr)
+      parent.append(newElement);
+    })
+  }))
+}
+
 function createPodcastElement(item, index, playedArr){
   const podcastElement = document.createElement("div");
   podcastElement.className = "podcast-element";
@@ -108,17 +127,10 @@ function createPodcastElement(item, index, playedArr){
 
   return podcastElement;
 }
+//////////////podcast elements////////////////////////
 
-function createAndAppendPodcastElementsfromArray(arr, parent){
-  const guids = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
-  getPlayed(guids).then(result => result.json().then(playedArr => {
-    playedArr.sort((a, b)=> b.guid-a.guid)
-    arr.forEach((item, index)=> {
-      const newElement = createPodcastElement(item, index, playedArr)
-      parent.append(newElement);
-    })
-  }))
-}
+
+//////////////queue////////////////////////
 
 function createQueue(arr){
   const oldQueueContainer = document.getElementById("queue")
@@ -171,6 +183,18 @@ function clearQueue(){
   queue = [];
 }
 
+function playNextInQueue(){
+  const audio = document.getElementById("currentAudio");
+  if (queue.length > 0) {
+    audio.src = queue[0].enclosure.url;
+    audio.play();
+  }
+  queue.shift();
+}
+//////////////queue////////////////////////
+
+///////////now playing/////////////////////
+
 function updateNowPlaying(element){
   const nowPlaying = document.getElementById("nowPlaying");
 
@@ -197,15 +221,9 @@ function updateNowPlaying(element){
   window.scrollTo(0,0);
 }
 
-function playNextInQueue(){
-  const audio = document.getElementById("nowPlaying").childNodes[1];
-  if (queue.length > 0) {
-    audio.src = queue[0].enclosure.url;
-    audio.play();
-  }
-  queue.shift();
-}
+///////////now playing/////////////////////
 
+///////search /////////////////
 function onSearch(e){
   const podcastContainer = document.getElementById("podcasts")
   const podcastContainerParent = document.getElementById("main");
@@ -223,3 +241,5 @@ function onSearch(e){
 }
 
 document.getElementById("search").addEventListener("input", onSearch)
+
+///////search /////////////////
