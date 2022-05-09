@@ -1,6 +1,9 @@
-#player {
+#player {  
+  top: 1px;
+  position: sticky;
+  position: -webkit-sticky;
+  background: #daeeff;
   padding: 10px 0px;
-  place-content: center;
   font-family: sans-serif;
 }
 
@@ -11,6 +14,7 @@
 }
 
 #play{
+  cursor: pointer;
   border: solid black;
   height: calc(3vh + 3vw);
   width: calc(3vh + 3vw);
@@ -36,6 +40,7 @@
   clip-path: none;
 }
 
+
 input[type="range"] {
   -webkit-appearance: none;
   margin-right: 15px;
@@ -43,9 +48,6 @@ input[type="range"] {
   height: 7px;
   background: rgb(250 0 0 / 60%);
   border-radius: 5px;
-  background-image: linear-gradient(#ff4500, #ff4500);
-  background-size: 70% 100%;
-  background-repeat: no-repeat;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -67,6 +69,7 @@ input[type=range]::-webkit-slider-runnable-track  {
   background: #f0f8ff;
 }
 
+
 #seek {
   margin: 4% 0;
   width: 100%;
@@ -82,23 +85,17 @@ input[type=range]::-webkit-slider-runnable-track  {
   margin: 0;
 }
 
+
 #rewind, #fast-forward {
-  height: calc(3vh + 3vw);
-  width: calc(3vh + 3vw);
-  font-family: sans-serif;
-  font-weight: bold;
-  background: black;
+  width: calc(3vh + 3vh);
+  cursor: pointer;
 }
 
 #rewind{
-  border-left: 0;
   margin-right: 1.5vh;
-  clip-path: polygon(50% 0, 50% 50%, 100% 0, 100% 100%, 50% 50%, 50% 100%, 0% 50%);
 }
 
 #fast-forward{
-  border-right: 0;
   margin-left: 1.5vh;
-  clip-path: polygon(0 0, 50% 50%, 50% 0, 100% 50%, 50% 100%, 50% 50%, 0 100%);
 }
 
