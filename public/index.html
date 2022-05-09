@@ -12,13 +12,12 @@
   <body>
     <div id="main">
       <div id="nowPlaying">
-        <!-- <audio id="currentAudio" preload="auto" controls></audio> -->
         <div id="player">
-          <audio id="currentAudio" preload="auto" controls></audio>
-          <input type="range" minimum=0 maximum=100 id="seek"></input>
+          <audio id="currentAudio" preload="auto"></audio>
+          <input id="seek" type="range" minimum=0 maximum=100 ></input>
           <div id="seek-values">
             <p id="current">0:00</p>
-            <p id="duration">4:41</p>
+            <p id="duration">0:00</p>
           </div>
           <div id="controls">
             <div id="rewind"></div>

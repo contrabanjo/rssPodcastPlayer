@@ -32,11 +32,8 @@ function updateCurrentTime(){
 seek.addEventListener('change', seekTo);
 audio.addEventListener('timeupdate', updateCurrentTime);
 
-seek.addEventListener('mousedown', ()=>{audio.pause()})
-//seek.addEventListener('mousemove', ()=>{audio.pause()})
-seek.addEventListener('mouseup', ()=>{audio.play()})
 
-play.addEventListener('click', ()=>{audio.paused ? audio.play() : audio.pause(); audio.paused ? document.getElementById("play-button").className = "pause": document.getElementById("play-button").className = "play";});
+play.addEventListener('click', ()=>{audio.paused ? audio.play() : audio.pause(); audio.paused ? document.getElementById("play-button").className = "play": document.getElementById("play-button").className = "pause";});
 play.addEventListener('mousedown', ()=>{document.getElementById("play-button").className = "stop"})
 play.addEventListener('mouseup', ()=>{document.getElementById("play-button").className = "play"})
 
