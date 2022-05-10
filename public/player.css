@@ -1,7 +1,8 @@
 #player {  
   background: #daeeff;
-  padding: 10px 0px;
+  padding: 10px 5px;
   font-family: sans-serif;
+  margin-bottom: 5px;
 }
 
 #controls {

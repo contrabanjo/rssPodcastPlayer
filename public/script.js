@@ -7,14 +7,17 @@ else {
 
 
 let podcasts = [];
-let queue = [];
 
 //////initialize page////////////////////////
 fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
+      console.log(res);
       document.getElementById('loading').remove()
+
+      const title = document.getElementById("title");
+      title.textContent = res.title;
+
       podcasts = Array.from(res.items);
-      console.log(podcasts[0]);
       const guids = podcasts.reduce((all, next, index)=> index > 0 ? all + ", ("+ next.guid + ", DEFAULT, DEFAULT)": all + "("+ next.guid + ", DEFAULT, DEFAULT)", "");
       postPodcastToDB(guids)
 
@@ -142,7 +145,6 @@ let paginationContainer;
 let paginationArray;
 
 function calculatePages(arr){
-  console.log(arr.length / 10);
   maxPages = Math.ceil((arr.length / 10))
   return maxPages;
 }
@@ -253,6 +255,7 @@ function prevPage(){
 //////////////pagination////////////////////////
 
 //////////////queue////////////////////////
+let queue = [];
 
 function createQueue(arr){
   const oldQueueContainer = document.getElementById("queue")
@@ -348,8 +351,11 @@ function updateNowPlaying(element){
 function onSearch(e){
   const searchbar = document.getElementById("search");
   const searchTerm = searchbar.value.toUpperCase()
-  const filteredPodcasts = podcasts.filter((item)=>item.title.toUpperCase().includes(searchTerm) || item.content.toUpperCase().includes(searchTerm));
-
+   
+  const filteredPodcasts = podcasts.filter((item)=>{
+   return item.title.toUpperCase().includes(searchTerm) || item.content.toUpperCase().includes(searchTerm);
+  })
+  
   const podcastContainer = document.getElementById("podcasts")
   clearAllChildren(podcastContainer);
   createAndAppendPodcastElementsfromArray(filteredPodcasts, podcastContainer);
