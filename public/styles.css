@@ -73,10 +73,11 @@ html, body {
   font-size: 40px;
 }
 
+/* queue */
+
 #queue {
   width: 100%;
 }
-
 
 #queue > div{
   padding: 2px;
@@ -98,4 +99,22 @@ html, body {
 #queue > div > :last-child{
   font-weight: 800;
   margin-right: 2%;
+}
+
+/* pagination */
+
+.page-number-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.page-number-container > div {
+ height: 15px;
+ width: 15px;
+}
+
+.page-number-container > div:first-child {
+  transform: rotate(0.5turn);
 }

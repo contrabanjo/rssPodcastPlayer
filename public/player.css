@@ -1,7 +1,4 @@
 #player {  
-  top: 1px;
-  position: sticky;
-  position: -webkit-sticky;
   background: #daeeff;
   padding: 10px 0px;
   font-family: sans-serif;

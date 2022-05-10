@@ -5,7 +5,7 @@ else {
   serverURL = "https://rss-podcast-player.herokuapp.com"
 }
 
-const parent = document.getElementById("podcasts");
+
 let podcasts = [];
 let queue = [];
 
@@ -14,9 +14,13 @@ fetch(serverURL + "/podcasts").then((response)=>{
   response.json().then(res => {
       document.getElementById('loading').remove()
       podcasts = Array.from(res.items);
+      console.log(podcasts[0]);
       const guids = podcasts.reduce((all, next, index)=> index > 0 ? all + ", ("+ next.guid + ", DEFAULT, DEFAULT)": all + "("+ next.guid + ", DEFAULT, DEFAULT)", "");
       postPodcastToDB(guids)
-      createAndAppendPodcastElementsfromArray(res.items, parent);
+
+      const parent = document.getElementById("podcasts");
+      //createAndAppendPodcastElementsfromArray(res.items, parent);
+      createPagination(res.items, parent);
   });
 })
 
@@ -51,6 +55,14 @@ function updateSeconds(guid, seconds){
   });
 }
 
+function getCurrentSeconds(guid){
+  return fetch(serverURL + "/seconds?guid=" + guid)
+}
+
+function getPlayed(guid){
+  return fetch(serverURL + "/played?guid=" + guid);
+}
+
 function saveCurrentSeconds(e){
   updateSeconds(e.target.guid, e.target.currentTime);
   if (e.target.currentTime/e.target.duration > 0.95){
@@ -71,27 +83,21 @@ function saveCurrentSeconds(e){
 const currentAudio = document.getElementById("currentAudio");
 currentAudio.addEventListener("timeupdate", saveCurrentSeconds);
 
-function getCurrentSeconds(guid){
-  return fetch(serverURL + "/seconds?guid=" + guid)
-}
-
-function getPlayed(guid){
-  return fetch(serverURL + "/played?guid=" + guid);
-}
-
 //////database calls////////////////////////
 
 //////////////podcast elements////////////////////////
 
 function createAndAppendPodcastElementsfromArray(arr, parent){
-  const guids = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
-  getPlayed(guids).then(result => result.json().then(playedArr => {
-    playedArr.sort((a, b)=> b.guid-a.guid)
-    arr.forEach((item, index)=> {
-      const newElement = createPodcastElement(item, index, playedArr)
-      parent.append(newElement);
-    })
-  }))
+  if (arr.length > 0){
+    const guids = arr.slice(1).reduce((prev, current)=> prev = prev + "," + current.guid, arr[0].guid);
+    getPlayed(guids).then(result => result.json().then(playedArr => {
+      playedArr.sort((a, b)=> b.guid-a.guid)
+      arr.forEach((item, index)=> {
+        const newElement = createPodcastElement(item, index, playedArr)
+        parent.append(newElement);
+      })
+    }))
+  }
 }
 
 function createPodcastElement(item, index, playedArr){
@@ -129,6 +135,122 @@ function createPodcastElement(item, index, playedArr){
 }
 //////////////podcast elements////////////////////////
 
+//////////////pagination////////////////////////
+let currentPage = 1;
+let maxPages = 10;
+let paginationContainer;
+let paginationArray;
+
+function calculatePages(arr){
+  console.log(arr.length / 10);
+  maxPages = Math.ceil((arr.length / 10))
+  return maxPages;
+}
+
+function createPagination(arr, parent){
+  paginationContainer = parent;
+  paginationArray = arr;
+  
+  calculatePages(arr);
+
+  
+
+  const pageNumberContainer = document.createElement("div");
+  pageNumberContainer.className = "page-number-container";
+  displayPageNumbers(pageNumberContainer);
+ 
+  parent.parentElement.insertBefore(pageNumberContainer, parent);
+ 
+  displayPage(currentPage);
+}
+
+function displayPage(pageNumber){
+  const page = document.getElementById("pageNumberInput");
+  page.value = pageNumber;
+
+  //page numbers start at 1, array index starts at 0;
+  const currentIndex = (pageNumber - 1) * 10;
+  const pageArray = paginationArray.slice(currentIndex, currentIndex + 10);
+  
+  clearAllChildren(paginationContainer);
+  createAndAppendPodcastElementsfromArray(pageArray, paginationContainer);
+}
+
+function displayPageNumbers(parent){
+  const pageNumberContainer = document.createElement("span");
+  pageNumberContainer.className = "page-number-container"
+
+  const prevPageButton = document.createElement("div");
+  prevPageButton.className = "play";
+  prevPageButton.addEventListener("click", prevPage);
+  pageNumberContainer.append(prevPageButton);
+  
+  const pageNumberText1 = document.createElement("span");
+  pageNumberText1.textContent = "Page "
+  pageNumberContainer.append(pageNumberText1);
+
+  const pageNumberInput = document.createElement("input");
+  pageNumberInput.id = "pageNumberInput";
+  pageNumberInput.type = "number";
+  pageNumberInput.min = 0;
+  pageNumberInput.max = maxPages;
+  pageNumberInput.placeholder = 0;
+  pageNumberInput.list = "pageNumbers";
+
+  pageNumberInput.addEventListener("change", (e)=>{displayPage(e.target.value)});
+
+  pageNumberContainer.append(pageNumberInput);  
+  
+  const datalist = document.createElement("datalist");
+  datalist.id = "pageNumbers"
+  for (i = 0; i <= maxPages; i++){
+    const newOption = document.createElement("option");
+    newOption.value = i;
+    datalist.append(newOption);
+  }
+  
+  pageNumberContainer.append(datalist);  
+
+  const pageNumberText2 = document.createElement("span");
+  pageNumberText2.textContent = "of " + maxPages;
+  pageNumberContainer.append(pageNumberText2);
+
+  const nextPageButton = document.createElement("div");
+  nextPageButton.className = "play";
+  nextPageButton.addEventListener("click", nextPage);
+  pageNumberContainer.append(nextPageButton);
+  
+  parent.append(pageNumberContainer);
+}
+
+function createPageNumberButton(n){
+  const newPageNumberButton = document.createElement("div");
+  newPageNumberButton.textContent = n;
+  newPageNumberButton.addEventListener("click", pageNumberButtonClick);
+  return newPageNumberButton;
+}
+
+function pageNumberButtonClick(e){
+  console.log(e.target.textContent);
+  currentPage = e.target.textContent;
+  displayPage(currentPage);
+}
+
+function nextPage(){
+  if (currentPage + 1 <= maxPages) {
+	currentPage+=1;
+  }
+  displayPage(currentPage);
+}
+
+function prevPage(){
+  if (currentPage - 1 >= 1) {
+	currentPage -=1;
+  }
+  displayPage(currentPage);
+}
+
+//////////////pagination////////////////////////
 
 //////////////queue////////////////////////
 
@@ -208,10 +330,8 @@ function updateNowPlaying(element){
   description.innerHTML = element.content;
 
   audio.addEventListener("loadedmetadata", (e)=>{
-    console.log("audio metadata loaded")
     getCurrentSeconds(element.guid).then(response => response.json().then(res=> {
-      audio.currentTime = res.seconds
-      console.log("seconds fetched, current time", audio.currentTime);
+      audio.currentTime = res.seconds    
     }));
   });
 
@@ -224,22 +344,27 @@ function updateNowPlaying(element){
 ///////////now playing/////////////////////
 
 ///////search /////////////////
-function onSearch(e){
-  const podcastContainer = document.getElementById("podcasts")
-  const podcastContainerParent = document.getElementById("main");
-  podcastContainer.remove()
 
+function onSearch(e){
   const searchbar = document.getElementById("search");
   const searchTerm = searchbar.value.toUpperCase()
   const filteredPodcasts = podcasts.filter((item)=>item.title.toUpperCase().includes(searchTerm) || item.content.toUpperCase().includes(searchTerm));
 
-  const newPodcastContainer = document.createElement("div");
-  newPodcastContainer.id = "podcasts"
-  podcastContainerParent.append(newPodcastContainer);
-  createAndAppendPodcastElementsfromArray(filteredPodcasts, newPodcastContainer);
-
+  const podcastContainer = document.getElementById("podcasts")
+  clearAllChildren(podcastContainer);
+  createAndAppendPodcastElementsfromArray(filteredPodcasts, podcastContainer);
 }
 
 document.getElementById("search").addEventListener("input", onSearch)
 
 ///////search /////////////////
+
+/////////general///////////
+
+function clearAllChildren(parent){
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
+/////////general///////////

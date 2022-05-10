@@ -14,8 +14,6 @@ audio.addEventListener("loadedmetadata", (e) => {
 })
 
 function seekTo(){
- console.log(audio.currentTime);
- console.log(seek.value);
  audio.currentTime = audio.duration * (seek.value/100)
 }
 
@@ -38,5 +36,5 @@ play.addEventListener('mousedown', ()=>{document.getElementById("play-button").c
 play.addEventListener('mouseup', ()=>{document.getElementById("play-button").className = "play"})
 
 
-rew.addEventListener('click', ()=>{audio.currentTime-=10})
-ff.addEventListener('click', ()=>{audio.currentTime+=10})
+rew.addEventListener('click', ()=>{audio.currentTime-=15})
+ff.addEventListener('click', ()=>{audio.currentTime+=15})
