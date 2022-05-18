@@ -314,11 +314,14 @@ function clearQueue(){
 function playNextInQueue(){
   const audio = document.getElementById("currentAudio");
   if (queue.length > 0) {
-    audio.src = queue[0].enclosure.url;
-    audio.play();
+    const next = queue[0]
+    updateNowPlaying(next);
   }
   queue.shift();
+  createQueue(queue);
 }
+
+document.getElementById("currentAudio").addEventListener("ended", playNextInQueue);
 //////////////queue////////////////////////
 
 ///////////now playing/////////////////////
