@@ -199,7 +199,10 @@ function displayPageNumbers(parent){
   pageNumberInput.placeholder = 0;
   pageNumberInput.list = "pageNumbers";
 
-  pageNumberInput.addEventListener("change", (e)=>{displayPage(e.target.value)});
+  pageNumberInput.addEventListener("change", (e)=>{
+    displayPage(e.target.value);
+    currentPage = Number(e.target.value);
+  });
 
   pageNumberContainer.append(pageNumberInput);  
   
