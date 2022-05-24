@@ -1,4 +1,4 @@
-const rssURL = require('./url.json')
+//const rssURL = require('./url.json')
 
 const express = require('express');
 const path = require('path');
@@ -26,7 +26,7 @@ app.get('/podcasts', (req, res) => {
   let parser = new rssParser();
   (async () => {
       try {
-        let feed = await parser.parseURL(rssURL.url);
+        let feed = await parser.parseURL(process.env.RSS_URL);
         res.send(feed);
       } catch(err){
         console.log(err)
