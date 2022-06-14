@@ -1,8 +1,18 @@
+:root{
+
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
 #main {
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-
     font-family: sans-serif;
 }
 
@@ -10,12 +20,20 @@
   align-self: flex-start;
 }
 
-#podcasts div {
+.podcast-element {
     background: aliceblue;
     border: thin solid white;
     padding: 2% 5%;
-    cursor: pointer;
+
+    display: grid;
+    grid-template-columns: 1fr 5fr 1fr;
+    align-items: center;
 }
+
+.podcastText {
+
+}
+
 
 #podcasts div p{
     margin: 0;
@@ -26,20 +44,84 @@
 }
 
 #search {
-    display: block;
+    font-size: 20px;
+    width: 100%;
     margin: 2%;
-    align-self: flex-start;
 }
 
 #nowPlaying {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
-#nowPlaying audio{
-    align-self: center; 
+
+/* podcast element buttons */
+.play{
+  cursor: pointer;
+  background: black;
+  height: 30px;
+  width: 30px;
+  clip-path: polygon(100% 50%, 0 0, 0 100%);
 }
 
-#nowPlaying :last-child{
-    font-size: 14px;
+.add{
+  cursor: pointer;
+  text-align: right;
+  font-weight: bold;
+  font-size: 40px;
+}
+
+/* queue */
+
+#queue {
+  width: 100%;
+}
+
+#queue > div{
+  padding: 2px;
+}
+
+#queue > :first-child {
+  border-bottom: solid black;
+}
+
+#queue > :not(:first-child) {
+  border-bottom: thin solid black;
+  margin: 1px;
+  cursor: pointer;
+  display: flex;
+  justify-content:space-between;
+  align-items: flex-start;
+}
+
+#queue > div > :last-child{
+  font-weight: 800;
+  margin-right: 2%;
+}
+
+/* pagination */
+
+.page-number-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.page-number-container > div {
+ height: 15px;
+ width: 15px;
+}
+
+.page-number-container > div:first-child {
+  transform: rotate(0.5turn);
+}
+
+/* title */
+
+#title {
+  margin-bottom: 0;
+  text-align: center;
+  font-family: sans-serif;
 }

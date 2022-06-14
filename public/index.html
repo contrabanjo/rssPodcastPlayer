@@ -6,20 +6,37 @@
     <title>RSS Podcast Player</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="player.css">
 
   </head>
   <body>
+    <h1 id = "title"></h1>
     <div id="main">
       <div id="nowPlaying">
-        <audio id="currentAudio" controls></audio>
+        <div id="player">
+          <audio id="currentAudio" preload="auto"></audio>
+          <input id="seek" type="range" minimum=0 maximum=100 ></input>
+          <div id="seek-values">
+            <p id="current">0:00</p>
+            <p id="duration">0:00</p>
+          </div>
+          <div id="controls">
+            <img id="rewind" src="rew15.svg"></img>
+            <div id="play">
+              <div id="play-button" class="play"></div>
+            </div>
+            <img id="fast-forward" src="ff15.svg"></img>
+          </div>
+        </div>
         <div id="npTitle"></div>
         <div id="npDescription"></div>
       </div>
-      <input id="search" type="text" placeholder="search"/>
+      <input id="search" type="search" placeholder="search"/>
 
-      <div id="podcasts"></div>
+      <div id="podcasts"><p id="loading">fetching podcasts...</p></div>
   </div>
   </body>
 </html>
 
 <script src="./script.js"></script>
+<script src="./player.js"></script>

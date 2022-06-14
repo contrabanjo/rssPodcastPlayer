@@ -1,7 +1,8 @@
-const rssURL = require('./url.json')
+//const rssURL = require('./url.json')
 
 const express = require('express');
 const path = require('path');
+
 
 const rssParser = require('rss-parser');
 
@@ -25,12 +26,16 @@ app.get('/podcasts', (req, res) => {
   let parser = new rssParser();
   (async () => {
       try {
-        let feed = await parser.parseURL(rssURL.url);
+        let feed = await parser.parseURL(process.env.RSS_URL);
         res.send(feed);
       } catch(err){
         console.log(err)
       }
     })();
+})
+
+app.get('/podcast', (req, res)=> {
+  db.getPodcast(req.query.guid).then(result => res.send(result.rows));
 })
 
 app.post('/podcast',(req, res)=> {
@@ -39,7 +44,7 @@ app.post('/podcast',(req, res)=> {
 })
 
 app.get('/seconds', (req, res)=>{
-  db.getPodcastSeconds(req.query.guid).then(result => res.send(result[0]));
+  db.getPodcastSeconds(req.query.guid).then(result => res.send(result.rows[0]));
 })
 
 app.post('/seconds', (req, res)=> {
@@ -53,7 +58,13 @@ app.post('/played', (req, res)=>{
 })
 
 app.get('/played', (req, res)=>{
-  db.getPodcastPlayed(req.query.guid).then(result => res.send(result[0]));
+  db.getPodcastPlayed(req.query.guid).then(result => {
+    if (result.rows.length > 1) {
+      res.send(result.rows);
+    } else {
+      res.send(result.rows[0])
+    }
+  });
 })
 
 const server = app.listen(port, () => {
