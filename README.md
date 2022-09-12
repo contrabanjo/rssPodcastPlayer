@@ -8,7 +8,7 @@ No podcast player had all the features I wanted, so I made my own. Allows playba
 
 ## Technologies used
 - Vanilla JS
-- Postrgres
+- Postgres
 - Heroku
 
 ## Libraries
